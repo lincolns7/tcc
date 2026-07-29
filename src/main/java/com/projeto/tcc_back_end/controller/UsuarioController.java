@@ -26,8 +26,8 @@ public class UsuarioController {
         return "index";
     }
     
-    @GetMapping("/cadastro")
+    @GetMapping("/cadastromedico")
     public String cadastro(){
-        return "cadastro";
+        return "cadastromedico";
     }
 }

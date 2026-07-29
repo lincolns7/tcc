@@ -4,10 +4,18 @@
  */
 package com.projeto.tcc_back_end.controller;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
 /**
  *
  * @author TI Paraná
  */
+@Controller
 public class HospitalController {
     
+    @GetMapping("/cadastrohospital")
+    public String cadastro(){
+        return "cadastrohospital";
+    }
 }
