@@ -7,6 +7,7 @@ package com.projeto.tcc_back_end.service;
 import com.projeto.tcc_back_end.model.PlantaoBean;
 import com.projeto.tcc_back_end.repository.PlantaoDAO;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +24,8 @@ public class PlantaoService {
         return repository.findAll();
     }
 
-    public PlantaoBean buscarPorId(Integer id) {
-        return repository.findById(id).orElse(null);
+    public Optional<PlantaoBean> buscarPorId(Integer id) {
+        return repository.findById(id);
     }
 
     public void cadastrarPlantao(PlantaoBean plantao) {

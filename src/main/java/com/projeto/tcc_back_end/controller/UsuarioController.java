@@ -5,6 +5,7 @@
 package com.projeto.tcc_back_end.controller;
 
 import com.projeto.tcc_back_end.model.UsuarioBean;
+import com.projeto.tcc_back_end.repository.UsuarioDAO;
 import com.projeto.tcc_back_end.service.PlantaoService;
 import com.projeto.tcc_back_end.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,27 +22,45 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author TI Paraná
  */
 @Controller
-@RequestMapping
 public class UsuarioController {
-    
+
     @Autowired
     private UsuarioService service;
-    
 
-    @GetMapping("/cadastromedico")
-    public String cadastro(){
-        return "cadastromedico";
-    }
-    
     @GetMapping("/login")
-    public String login(){
+    public String login() {
         return "login";
     }
-    
-    @PostMapping("/login")
-    public String logar(@ModelAttribute UsuarioBean usuario) {
 
-        return service.logar(usuario);
+    @PostMapping("/login")
+    public String logar(@ModelAttribute UsuarioBean usuario, Model model) {
+
+        UsuarioBean usuarioLogado = service.logar(usuario);
+
+        if (usuarioLogado == null) {
+            model.addAttribute("erro", "E-mail ou senha inválidos.");
+            return "login";
+        }
+
+        return "redirect:/iniciomedicos";
+    }
+
+    @GetMapping("/cadastrousuario")
+    public String cadastroUsuario() {
+        return "cadastrousuario";
+    }
+
+    @PostMapping("/cadastrousuario")
+    public String cadastrar(@ModelAttribute UsuarioBean usuario, Model model) {
+
+        try {
+            service.cadastrarUsuario(usuario);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("erro", e.getMessage());
+            return "cadastrousuario";
+        }
+
+        return "redirect:/login";
     }
 
 }
