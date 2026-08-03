@@ -21,40 +21,22 @@ public class MedicoService {
     private MedicoDAO repository;
 
     public List<MedicoBean> listarMedicos() {
-
         return repository.findAll();
-
     }
 
     public MedicoBean buscarPorId(Integer id) {
-
         return repository.findById(id).orElse(null);
-
     }
 
-    public void cadastrarMedico(MedicoBean medico) {
-
-        if (medico.getCrm() == null || medico.getCrm().trim().isEmpty()) {
-            throw new IllegalArgumentException("CRM obrigatório.");
-        }
-
-        if (medico.getEspecialidade() == null || medico.getEspecialidade().trim().isEmpty()) {
-            throw new IllegalArgumentException("Especialidade obrigatória.");
-        }
-
-        repository.save(medico);
-
+    public MedicoBean buscarPorUsuario(Integer usuarioId) {
+        return repository.findByUsuarioId(usuarioId).orElse(null);
     }
+
     public void atualizarMedico(MedicoBean medico) {
-
         repository.save(medico);
-
     }
 
     public void excluirMedico(Integer id) {
-
         repository.deleteById(id);
-
     }
-
 }

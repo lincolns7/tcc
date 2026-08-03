@@ -24,12 +24,15 @@ import org.hibernate.annotations.ManyToAny;
 @Entity
 @Table(name = "plantao")
 public class PlantaoBean {
+
     @Id
-    @GeneratedValue (strategy = GenerationType.AUTO)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
     @ManyToOne
     @JoinColumn(name = "hospital_id", referencedColumnName = "id", nullable = false)
-    private HospitalBean hospital_id;
+    private HospitalBean hospital;
+
     private String titulo;
     private String especialidade;
     private LocalDate data;
@@ -37,24 +40,25 @@ public class PlantaoBean {
     private Double valor;
     private String status;
 
+    public PlantaoBean() {
+    }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public HospitalBean getHospital_id() {
-        return hospital_id;
+    public HospitalBean getHospital() {
+        return hospital;
     }
 
-    public void setHospital_id(HospitalBean hospital_id) {
-        this.hospital_id = hospital_id;
+    public void setHospital(HospitalBean hospital) {
+        this.hospital = hospital;
     }
 
-    
     public String getTitulo() {
         return titulo;
     }
@@ -102,7 +106,4 @@ public class PlantaoBean {
     public void setStatus(String status) {
         this.status = status;
     }
-    
-    
-
 }

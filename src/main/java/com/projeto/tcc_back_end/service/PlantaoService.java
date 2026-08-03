@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class PlantaoService {
+
     @Autowired
     private PlantaoDAO repository;
 
@@ -24,30 +25,44 @@ public class PlantaoService {
         return repository.findAll();
     }
 
+    /** Dashboard do medico: somente plantoes abertos. */
+    public List<PlantaoBean> listarAbertos() {
+        return repository.findByStatusOrderByDataAsc("ABERTO");
+    }
+
+    /** Dashboard do hospital: somente os plantoes daquele hospital. */
+    public List<PlantaoBean> listarPorHospital(Integer hospitalId) {
+        return repository.findByHospitalIdOrderByDataAsc(hospitalId);
+    }
+
     public Optional<PlantaoBean> buscarPorId(Integer id) {
         return repository.findById(id);
     }
 
-    public void cadastrarPlantao(PlantaoBean plantao) {
+    public void salvar(PlantaoBean plantao) {
+
+        if (plantao.getHospital() == null) {
+            throw new IllegalArgumentException("Plantao precisa estar vinculado a um hospital.");
+        }
 
         if (plantao.getTitulo() == null || plantao.getTitulo().trim().isEmpty()) {
-            throw new IllegalArgumentException("O título é obrigatório.");
+            throw new IllegalArgumentException("O titulo e obrigatorio.");
         }
 
         if (plantao.getEspecialidade() == null || plantao.getEspecialidade().trim().isEmpty()) {
-            throw new IllegalArgumentException("A especialidade é obrigatória.");
+            throw new IllegalArgumentException("A especialidade e obrigatoria.");
         }
 
         if (plantao.getData() == null) {
-            throw new IllegalArgumentException("A data é obrigatória.");
+            throw new IllegalArgumentException("A data e obrigatoria.");
         }
 
         if (plantao.getHorario() == null) {
-            throw new IllegalArgumentException("O horário é obrigatório.");
+            throw new IllegalArgumentException("O horario e obrigatorio.");
         }
 
         if (plantao.getValor() == null || plantao.getValor() <= 0) {
-            throw new IllegalArgumentException("Informe um valor válido.");
+            throw new IllegalArgumentException("Informe um valor valido.");
         }
 
         if (plantao.getStatus() == null || plantao.getStatus().trim().isEmpty()) {
@@ -57,11 +72,12 @@ public class PlantaoService {
         repository.save(plantao);
     }
 
-    public void atualizarPlantao(PlantaoBean plantao) {
-        repository.save(plantao);
-    }
-
     public void excluirPlantao(Integer id) {
         repository.deleteById(id);
+    }
+
+    public void marcarComoPreenchido(PlantaoBean plantao) {
+        plantao.setStatus("PREENCHIDO");
+        repository.save(plantao);
     }
 }

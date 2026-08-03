@@ -4,8 +4,8 @@
  */
 package com.projeto.tcc_back_end.repository;
 
-import com.projeto.tcc_back_end.model.PlantaoBean;
-import java.util.List;
+import com.projeto.tcc_back_end.model.HospitalBean;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,11 +14,9 @@ import org.springframework.stereotype.Repository;
  * @author Aluno
  */
 @Repository
-public interface PlantaoDAO extends JpaRepository<PlantaoBean, Integer> {
+public interface HospitalDAO extends JpaRepository<HospitalBean, Integer> {
 
-    List<PlantaoBean> findByStatusOrderByDataAsc(String status);
+    Optional<HospitalBean> findByUsuarioId(Integer usuarioId);
 
-    List<PlantaoBean> findByHospitalIdOrderByDataAsc(Integer hospitalId);
-
-    List<PlantaoBean> findByEspecialidadeContainingIgnoreCaseAndStatus(String especialidade, String status);
+    boolean existsByCnpj(String cnpj);
 }

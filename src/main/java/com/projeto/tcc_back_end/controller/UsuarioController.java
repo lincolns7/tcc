@@ -8,6 +8,7 @@ import com.projeto.tcc_back_end.model.UsuarioBean;
 import com.projeto.tcc_back_end.repository.UsuarioDAO;
 import com.projeto.tcc_back_end.service.PlantaoService;
 import com.projeto.tcc_back_end.service.UsuarioService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -27,40 +29,34 @@ public class UsuarioController {
     @Autowired
     private UsuarioService service;
 
+    @GetMapping("/")
+    public String index() {
+        return "index";
+    }
+
     @GetMapping("/login")
     public String login() {
         return "login";
     }
 
     @PostMapping("/login")
-    public String logar(@ModelAttribute UsuarioBean usuario, Model model) {
-
-        UsuarioBean usuarioLogado = service.logar(usuario);
-
-        if (usuarioLogado == null) {
-            model.addAttribute("erro", "E-mail ou senha inválidos.");
-            return "login";
-        }
-
-        return "redirect:/iniciomedicos";
-    }
-
-    @GetMapping("/cadastrousuario")
-    public String cadastroUsuario() {
-        return "cadastrousuario";
-    }
-
-    @PostMapping("/cadastrousuario")
-    public String cadastrar(@ModelAttribute UsuarioBean usuario, Model model) {
-
+    public String logar(@RequestParam String email,
+                        @RequestParam String senha,
+                        HttpSession session,
+                        Model model) {
         try {
-            service.cadastrarUsuario(usuario);
+            UsuarioBean usuario = service.autenticar(email, senha);
+            SessaoUtil.logar(session, usuario);
+            return service.telaInicial(usuario);
         } catch (IllegalArgumentException e) {
             model.addAttribute("erro", e.getMessage());
-            return "cadastrousuario";
+            return "login";
         }
-
-        return "redirect:/login";
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
+    }
 }
