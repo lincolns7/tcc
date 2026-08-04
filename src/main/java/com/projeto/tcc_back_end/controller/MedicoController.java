@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -24,18 +25,27 @@ public class MedicoController {
 
     @GetMapping("/cadastromedico")
     public String cadastroMedico() {
-
         return "cadastromedico";
-
     }
 
     @PostMapping("/cadastromedico")
-    public String cadastrar(@ModelAttribute MedicoBean medico) {
+    public String cadastrar(
+            @RequestParam String nome,
+            @RequestParam String email,
+            @RequestParam String telefone,
+            @RequestParam String senha,
+            @RequestParam String crm,
+            @RequestParam String especialidade) {
 
-        service.cadastrarMedico(medico);
+        service.cadastrarMedico(
+                nome,
+                email,
+                senha,
+                telefone,
+                crm,
+                especialidade);
 
-        return "redirect:/iniciomedicos";
-
+        return "redirect:/login";
     }
 
 }

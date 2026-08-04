@@ -27,15 +27,17 @@ public class MedicoBean {
     @JoinColumn(name = "usuario_id")
     private UsuarioBean usuario;
     private String crm;
+    private String telefone;
     private String especialidade;
 
     public MedicoBean() {
     }
 
-    public MedicoBean(Integer id, UsuarioBean usuario, String crm, String especialidade) {
+    public MedicoBean(Integer id, UsuarioBean usuario, String crm, String telefone, String especialidade) {
         this.id = id;
         this.usuario = usuario;
         this.crm = crm;
+        this.telefone = telefone;
         this.especialidade = especialidade;
     }
 
@@ -63,6 +65,14 @@ public class MedicoBean {
         this.crm = crm;
     }
 
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
     public String getEspecialidade() {
         return especialidade;
     }
@@ -70,6 +80,6 @@ public class MedicoBean {
     public void setEspecialidade(String especialidade) {
         this.especialidade = especialidade;
     }
-    
-    
+
+     
 }

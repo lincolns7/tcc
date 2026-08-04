@@ -18,7 +18,7 @@ import jakarta.persistence.Table;
 @Table(name = "usuario")
 public class UsuarioBean {
     @Id
-    @GeneratedValue (strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nome;
     private String email;

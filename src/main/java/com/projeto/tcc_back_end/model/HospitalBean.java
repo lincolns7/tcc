@@ -23,17 +23,25 @@ public class HospitalBean {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     @OneToOne
     @JoinColumn(name = "usuario_id")
     private UsuarioBean usuario;
-
+    private String telefone;
+    private String endereco;
     private String cnpj;
-
     private String nomeHospital;
 
     public HospitalBean() {
 
+    }
+
+    public HospitalBean(Integer id, UsuarioBean usuario, String telefone, String endereco, String cnpj, String nomeHospital) {
+        this.id = id;
+        this.usuario = usuario;
+        this.telefone = telefone;
+        this.endereco = endereco;
+        this.cnpj = cnpj;
+        this.nomeHospital = nomeHospital;
     }
 
     public Integer getId() {
@@ -52,6 +60,22 @@ public class HospitalBean {
         this.usuario = usuario;
     }
 
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public String getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(String endereco) {
+        this.endereco = endereco;
+    }
+
     public String getCnpj() {
         return cnpj;
     }
@@ -67,5 +91,5 @@ public class HospitalBean {
     public void setNomeHospital(String nomeHospital) {
         this.nomeHospital = nomeHospital;
     }
-
+    
 }

@@ -16,8 +16,8 @@ import org.springframework.stereotype.Repository;
  * @author TI Paraná
  */
 @Repository
-public interface UsuarioDAO extends JpaRepository<UsuarioBean, Integer> {
+public interface UsuarioDAO extends JpaRepository<UsuarioBean, Integer>{
 
-    Optional<UsuarioBean> findByEmail(String email);
+    UsuarioBean findByEmail(String email);
 
 }
