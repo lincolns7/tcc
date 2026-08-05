@@ -25,43 +25,43 @@ public class MedicoService {
     @Autowired
     private UsuarioDAO usuarioDAO;
 
-    public List<MedicoBean> listarMedicos() {
+    public void cadastrarMedico(String nome,String email,String senha,String telefone,String crm,String especialidade){
 
-        return repository.findAll();
-
-    }
-
-    public MedicoBean buscarPorId(Integer id) {
-
-        return repository.findById(id).orElse(null);
-
-    }
-
-    public void cadastrarMedico(String nome,
-                                String email,
-                                String senha,
-                                String telefone,
-                                String crm,
-                                String especialidade) {
-
-        if (nome == null || nome.trim().isEmpty()) {
+    
+        if(nome == null || nome.trim().isEmpty()){
             throw new IllegalArgumentException("Nome obrigatório.");
         }
 
-        if (email == null || email.trim().isEmpty()) {
+        if(email == null || email.trim().isEmpty()){
             throw new IllegalArgumentException("E-mail obrigatório.");
         }
 
-        if (senha == null || senha.trim().isEmpty()) {
+        if(usuarioDAO.findByEmail(email) != null){
+            throw new IllegalArgumentException("E-mail já cadastrado.");
+        }
+
+        if(senha == null || senha.trim().isEmpty()){
             throw new IllegalArgumentException("Senha obrigatória.");
         }
 
-        if (crm == null || crm.trim().isEmpty()) {
+        if(senha.length() < 6){
+            throw new IllegalArgumentException("A senha deve possuir no mínimo 6 caracteres.");
+        }
+
+        if(crm == null || crm.trim().isEmpty()){
             throw new IllegalArgumentException("CRM obrigatório.");
         }
 
-        if (especialidade == null || especialidade.trim().isEmpty()) {
+        if(repository.findByCrm(crm) != null){
+            throw new IllegalArgumentException("CRM já cadastrado.");
+        }
+
+        if(especialidade == null || especialidade.trim().isEmpty()){
             throw new IllegalArgumentException("Especialidade obrigatória.");
+        }
+
+        if(telefone == null || telefone.trim().isEmpty()){
+            throw new IllegalArgumentException("Telefone obrigatório.");
         }
 
         UsuarioBean usuario = new UsuarioBean();
@@ -73,24 +73,43 @@ public class MedicoService {
 
         usuarioDAO.save(usuario);
 
+
         MedicoBean medico = new MedicoBean();
 
         medico.setUsuario(usuario);
-        medico.setTelefone(telefone);
         medico.setCrm(crm);
+        medico.setTelefone(telefone);
         medico.setEspecialidade(especialidade);
 
         repository.save(medico);
 
     }
 
-    public void atualizarMedico(MedicoBean medico) {
+    public MedicoBean buscarPorId(Integer id){
+
+        return repository.findById(id).orElse(null);
+
+    }
+
+    public void atualizarMedico(MedicoBean medico){
+
+        if(medico.getId() == null){
+            throw new IllegalArgumentException("Médico inválido.");
+        }
+
+        if(medico.getTelefone() == null || medico.getTelefone().trim().isEmpty()){
+            throw new IllegalArgumentException("Telefone obrigatório.");
+        }
 
         repository.save(medico);
 
     }
 
-    public void excluirMedico(Integer id) {
+    public void excluirMedico(Integer id){
+
+        if(repository.findById(id).isEmpty()){
+            throw new IllegalArgumentException("Médico não encontrado.");
+        }
 
         repository.deleteById(id);
 

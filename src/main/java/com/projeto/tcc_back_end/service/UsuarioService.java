@@ -4,11 +4,8 @@
  */
 package com.projeto.tcc_back_end.service;
 
-import com.projeto.tcc_back_end.model.PlantaoBean;
 import com.projeto.tcc_back_end.model.UsuarioBean;
 import com.projeto.tcc_back_end.repository.UsuarioDAO;
-import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,20 +19,27 @@ public class UsuarioService {
     @Autowired
     private UsuarioDAO repository;
 
-    /**
-     * Valida as credenciais informadas.
-     * Retorna o UsuarioBean encontrado no banco se e-mail e senha conferem,
-     * ou null caso contrário.
-     */
     public UsuarioBean logar(UsuarioBean usuario) {
 
-        Optional<UsuarioBean> encontrado = repository.findByEmail(usuario.getEmail());
-
-        if (encontrado.isPresent() && encontrado.get().getSenha().equals(usuario.getSenha())) {
-            return encontrado.get();
+        if (usuario.getEmail() == null || usuario.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("E-mail obrigatório.");
         }
 
-        return null;
+        if (usuario.getSenha() == null || usuario.getSenha().trim().isEmpty()) {
+            throw new IllegalArgumentException("Senha obrigatória.");
+        }
+
+        UsuarioBean usuarioBanco = repository.findByEmail(usuario.getEmail());
+
+        if (usuarioBanco == null) {
+            throw new IllegalArgumentException("Usuário não encontrado.");
+        }
+
+        if (!usuarioBanco.getSenha().equals(usuario.getSenha())) {
+            throw new IllegalArgumentException("Senha incorreta.");
+        }
+
+        return usuarioBanco;
     }
 
     public void cadastrarUsuario(UsuarioBean usuario) {
@@ -52,11 +56,45 @@ public class UsuarioService {
             throw new IllegalArgumentException("Senha obrigatória.");
         }
 
-        if (repository.findByEmail(usuario.getEmail()).isPresent()) {
+        if (usuario.getSenha().length() < 6) {
+            throw new IllegalArgumentException("A senha deve possuir no mínimo 6 caracteres.");
+        }
+
+        if (usuario.getTipo() == null || usuario.getTipo().trim().isEmpty()) {
+            throw new IllegalArgumentException("Tipo de usuário obrigatório.");
+        }
+
+        if (repository.findByEmail(usuario.getEmail()) != null) {
             throw new IllegalArgumentException("Já existe um usuário cadastrado com esse e-mail.");
         }
 
         repository.save(usuario);
+    }
+
+    public UsuarioBean buscarPorId(Integer id) {
+
+        return repository.findById(id).orElse(null);
+
+    }
+
+    public void atualizarUsuario(UsuarioBean usuario) {
+
+        if (usuario.getId() == null) {
+            throw new IllegalArgumentException("Usuário inválido.");
+        }
+
+        repository.save(usuario);
+
+    }
+
+    public void excluirUsuario(Integer id) {
+
+        if (repository.findById(id).isEmpty()) {
+            throw new IllegalArgumentException("Usuário não encontrado.");
+        }
+
+        repository.deleteById(id);
+
     }
 
 }

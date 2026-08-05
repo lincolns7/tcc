@@ -8,7 +8,6 @@ import com.projeto.tcc_back_end.model.HospitalBean;
 import com.projeto.tcc_back_end.model.UsuarioBean;
 import com.projeto.tcc_back_end.repository.HospitalDAO;
 import com.projeto.tcc_back_end.repository.UsuarioDAO;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,30 +19,57 @@ import org.springframework.stereotype.Service;
 public class HospitalService {
 
     @Autowired
-    private HospitalDAO hospitalDAO;
+    private HospitalDAO repository;
 
+    @Autowired
+    private HospitalService hospitalService;
+    
     @Autowired
     private UsuarioDAO usuarioDAO;
 
-    public List<HospitalBean> listarHospitais() {
+    public void cadastrarHospital(String nome,String email,String senha,String telefone,String cnpj,String nomeHospital,String endereco){
 
-        return hospitalDAO.findAll();
+        if(nome == null || nome.trim().isEmpty()){
+            throw new IllegalArgumentException("Nome do responsável obrigatório.");
+        }
 
-    }
+        if(email == null || email.trim().isEmpty()){
+            throw new IllegalArgumentException("E-mail obrigatório.");
+        }
 
-    public HospitalBean buscarPorId(Integer id) {
+        if(usuarioDAO.findByEmail(email) != null){
+            throw new IllegalArgumentException("Já existe um usuário com esse e-mail.");
+        }
 
-        return hospitalDAO.findById(id).orElse(null);
+        if(senha == null || senha.trim().isEmpty()){
+            throw new IllegalArgumentException("Senha obrigatória.");
+        }
 
-    }
+        if(senha.length() < 6){
+            throw new IllegalArgumentException("A senha deve possuir no mínimo 6 caracteres.");
+        }
 
-    public void cadastrarHospital(String nome,
-                                  String email,
-                                  String senha,
-                                  String nomeHospital,
-                                  String cnpj,
-                                  String telefone,
-                                  String endereco) {
+
+        if(telefone == null || telefone.trim().isEmpty()){
+            throw new IllegalArgumentException("Telefone obrigatório.");
+        }
+
+        if(cnpj == null || cnpj.trim().isEmpty()){
+            throw new IllegalArgumentException("CNPJ obrigatório.");
+        }
+
+        if(repository.findByCnpj(cnpj) != null){
+            throw new IllegalArgumentException("Já existe um hospital com esse CNPJ.");
+        }
+
+        if(nomeHospital == null || nomeHospital.trim().isEmpty()){
+            throw new IllegalArgumentException("Nome do hospital obrigatório.");
+        }
+
+        if(endereco == null || endereco.trim().isEmpty()){
+            throw new IllegalArgumentException("Endereço obrigatório.");
+        }
+
 
         UsuarioBean usuario = new UsuarioBean();
 
@@ -54,27 +80,50 @@ public class HospitalService {
 
         usuarioDAO.save(usuario);
 
+
         HospitalBean hospital = new HospitalBean();
 
         hospital.setUsuario(usuario);
-        hospital.setNomeHospital(nomeHospital);
-        hospital.setCnpj(cnpj);
         hospital.setTelefone(telefone);
+        hospital.setCnpj(cnpj);
+        hospital.setNomeHospital(nomeHospital);
         hospital.setEndereco(endereco);
 
-        hospitalDAO.save(hospital);
+        repository.save(hospital);
 
     }
 
-    public void atualizarHospital(HospitalBean hospital) {
+    public HospitalBean buscarPorId(Integer id){
 
-        hospitalDAO.save(hospital);
+        return repository.findById(id).orElse(null);
 
     }
 
-    public void excluirHospital(Integer id) {
+    public void atualizarHospital(HospitalBean hospital){
 
-        hospitalDAO.deleteById(id);
+        if(hospital.getId() == null){
+            throw new IllegalArgumentException("Hospital inválido.");
+        }
+
+        if(hospital.getTelefone() == null || hospital.getTelefone().trim().isEmpty()){
+            throw new IllegalArgumentException("Telefone obrigatório.");
+        }
+
+        if(hospital.getEndereco() == null || hospital.getEndereco().trim().isEmpty()){
+            throw new IllegalArgumentException("Endereço obrigatório.");
+        }
+
+        repository.save(hospital);
+
+    }
+
+    public void excluirHospital(Integer id){
+
+        if(repository.findById(id).isEmpty()){
+            throw new IllegalArgumentException("Hospital não encontrado.");
+        }
+
+        repository.deleteById(id);
 
     }
 

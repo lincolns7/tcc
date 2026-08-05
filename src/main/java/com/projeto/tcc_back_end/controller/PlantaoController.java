@@ -4,14 +4,18 @@
  */
 package com.projeto.tcc_back_end.controller;
 
+import com.projeto.tcc_back_end.model.HospitalBean;
 import com.projeto.tcc_back_end.model.PlantaoBean;
+import com.projeto.tcc_back_end.service.HospitalService;
 import com.projeto.tcc_back_end.service.PlantaoService;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 /**
  *
@@ -19,20 +23,39 @@ import org.springframework.web.bind.annotation.PathVariable;
  */
 @Controller
 public class PlantaoController {
+
     @Autowired
-    private PlantaoService plantaoService;
+    private PlantaoService service;
 
-    @GetMapping("/iniciomedicos")
-    public String index(Model model){
+    @Autowired
+    private HospitalService hospitalService;
 
-    model.addAttribute("plantoes", plantaoService.listarPlantoes());
+    @GetMapping("/cadastroplantao")
+    public String telaCadastro() {
 
-        return "/iniciomedicos";
+        return "cadastroplantao";
+
+    }
+
+    @PostMapping("/cadastroplantao")
+public String cadastrar(@ModelAttribute PlantaoBean plantao) {
+
+    plantao.setHospital_id(hospitalService.buscarPorId(1));
+
+    plantao.setStatus("ABERTO");
+
+    service.cadastrarPlantao(plantao);
+
+    return "redirect:/iniciohospital";
+}
+
+    @GetMapping("/plantoes")
+    public String listar(Model model) {
+
+        model.addAttribute("plantoes", service.listarDisponiveis());
+
+        return "plantoes";
+
     }
     
-    @GetMapping("/iniciomedicos/plantao-{id}")
-    public String verplantao(@PathVariable int id, Model model){
-        Optional<PlantaoBean> detalhes = plantaoService.buscarPorId(id);
-        return "detalhes";
-    }
-    }
+}

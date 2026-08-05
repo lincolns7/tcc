@@ -24,10 +24,10 @@ public class MedicoController {
     private MedicoService service;
 
     @GetMapping("/cadastromedico")
-    public String cadastroMedico() {
+    public String cadastroMedico(){
+
         return "cadastromedico";
     }
-
     @PostMapping("/cadastromedico")
     public String cadastrar(
             @RequestParam String nome,
@@ -35,7 +35,7 @@ public class MedicoController {
             @RequestParam String telefone,
             @RequestParam String senha,
             @RequestParam String crm,
-            @RequestParam String especialidade) {
+            @RequestParam String especialidade){
 
         service.cadastrarMedico(
                 nome,
@@ -44,7 +44,6 @@ public class MedicoController {
                 telefone,
                 crm,
                 especialidade);
-
         return "redirect:/login";
     }
 

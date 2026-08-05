@@ -13,4 +13,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface MedicoDAO extends JpaRepository<MedicoBean, Integer>{
 
+    MedicoBean findByCrm(String crm);
+
 }
