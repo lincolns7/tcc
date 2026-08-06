@@ -20,9 +20,6 @@ public class HospitalService {
 
     @Autowired
     private HospitalDAO repository;
-
-    @Autowired
-    private HospitalService hospitalService;
     
     @Autowired
     private UsuarioDAO usuarioDAO;

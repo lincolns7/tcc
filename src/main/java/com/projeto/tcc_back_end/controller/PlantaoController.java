@@ -46,7 +46,7 @@ public String cadastrar(@ModelAttribute PlantaoBean plantao) {
 
     service.cadastrarPlantao(plantao);
 
-    return "redirect:/iniciohospital";
+    return "redirect:/dashboard";
 }
 
     @GetMapping("/plantoes")
