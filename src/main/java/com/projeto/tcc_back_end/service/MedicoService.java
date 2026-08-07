@@ -114,5 +114,14 @@ public class MedicoService {
         repository.deleteById(id);
 
     }
+    
+    public MedicoBean buscarPorUsuario(UsuarioBean usuario) {
+
+    if (usuario == null) {
+        return null;
+    }
+
+    return repository.findByUsuario(usuario);
+    }
 
 }

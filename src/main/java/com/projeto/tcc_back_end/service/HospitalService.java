@@ -124,4 +124,12 @@ public class HospitalService {
 
     }
 
+    public HospitalBean buscarPorUsuario(UsuarioBean usuario) {
+
+    if (usuario == null) {
+        return null;
+    }
+
+    return repository.findByUsuario(usuario);
+    }
 }

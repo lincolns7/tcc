@@ -4,6 +4,7 @@
  */
 package com.projeto.tcc_back_end.service;
 
+import com.projeto.tcc_back_end.model.HospitalBean;
 import com.projeto.tcc_back_end.model.PlantaoBean;
 import com.projeto.tcc_back_end.repository.PlantaoDAO;
 import java.time.LocalDate;
@@ -101,4 +102,11 @@ public class PlantaoService {
 
     }
 
+    public List<PlantaoBean> listarPorHospital(HospitalBean hospital) {
+
+    if (hospital == null) {
+        throw new IllegalArgumentException("Hospital inválido.");
+    }
+    return repository.buscarPorHospital(hospital);
+}
 }

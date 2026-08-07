@@ -5,6 +5,7 @@
 package com.projeto.tcc_back_end.repository;
 
 import com.projeto.tcc_back_end.model.MedicoBean;
+import com.projeto.tcc_back_end.model.UsuarioBean;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -14,5 +15,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface MedicoDAO extends JpaRepository<MedicoBean, Integer>{
 
     MedicoBean findByCrm(String crm);
+    
+    MedicoBean findByUsuario(UsuarioBean usuario);
 
 }

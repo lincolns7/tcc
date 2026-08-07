@@ -4,18 +4,22 @@
  */
 package com.projeto.tcc_back_end.repository;
 
+import com.projeto.tcc_back_end.model.HospitalBean;
 import com.projeto.tcc_back_end.model.PlantaoBean;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-/**
- *
- * @author Aluno
- */
 @Repository
-public interface PlantaoDAO extends JpaRepository<PlantaoBean, Integer>{
+public interface PlantaoDAO extends JpaRepository<PlantaoBean, Integer> {
 
     List<PlantaoBean> findByStatus(String status);
 
+    @Query("SELECT p FROM PlantaoBean p WHERE p.hospital_id = :hospital")
+    List<PlantaoBean> buscarPorHospital(
+            @Param("hospital") HospitalBean hospital
+    );
 }
+
