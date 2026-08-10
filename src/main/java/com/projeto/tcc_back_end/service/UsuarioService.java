@@ -24,13 +24,11 @@ public class UsuarioService {
         if (usuario.getEmail() == null || usuario.getEmail().trim().isEmpty()) {
             throw new IllegalArgumentException("E-mail obrigatório.");
         }
-
         if (usuario.getSenha() == null || usuario.getSenha().trim().isEmpty()) {
             throw new IllegalArgumentException("Senha obrigatória.");
         }
 
         UsuarioBean usuarioBanco = repository.findByEmail(usuario.getEmail());
-
         if (usuarioBanco == null) {
             throw new IllegalArgumentException("Usuário não encontrado.");
         }
@@ -38,7 +36,6 @@ public class UsuarioService {
         if (!usuarioBanco.getSenha().equals(usuario.getSenha())) {
             throw new IllegalArgumentException("Senha incorreta.");
         }
-
         return usuarioBanco;
     }
 
@@ -67,14 +64,12 @@ public class UsuarioService {
         if (repository.findByEmail(usuario.getEmail()) != null) {
             throw new IllegalArgumentException("Já existe um usuário cadastrado com esse e-mail.");
         }
-
         repository.save(usuario);
     }
 
     public UsuarioBean buscarPorId(Integer id) {
 
         return repository.findById(id).orElse(null);
-
     }
 
     public void atualizarUsuario(UsuarioBean usuario) {
@@ -84,7 +79,6 @@ public class UsuarioService {
         }
 
         repository.save(usuario);
-
     }
 
     public void excluirUsuario(Integer id) {
@@ -92,9 +86,6 @@ public class UsuarioService {
         if (repository.findById(id).isEmpty()) {
             throw new IllegalArgumentException("Usuário não encontrado.");
         }
-
         repository.deleteById(id);
-
-    }
-
+}
 }

@@ -87,9 +87,7 @@ public class PlantaoService {
     if (plantao.getValor() <= 0) {
         throw new IllegalArgumentException("Valor deve ser maior que zero.");
     }
-
     repository.save(plantao);
-
     }
 
     public void excluirPlantao(Integer id){
@@ -97,11 +95,9 @@ public class PlantaoService {
         if(repository.findById(id).isEmpty()){
             throw new IllegalArgumentException("Plantão não encontrado.");
         }
-
         repository.deleteById(id);
 
     }
-
     public List<PlantaoBean> listarPorHospital(HospitalBean hospital) {
 
     if (hospital == null) {

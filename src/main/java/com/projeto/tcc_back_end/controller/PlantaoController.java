@@ -68,10 +68,7 @@ public class PlantaoController {
                 hospitalService.buscarPorUsuario(usuario);
 
         if (hospital == null) {
-            model.addAttribute(
-                    "erro",
-                    "Hospital não encontrado."
-            );
+            model.addAttribute("erro","Hospital não encontrado.");
 
             return "cadastroplantao";
         }
@@ -81,7 +78,6 @@ public class PlantaoController {
         plantao.setStatus("ABERTO");
 
         try {
-
             service.cadastrarPlantao(plantao);
 
         } catch (IllegalArgumentException e) {
@@ -90,7 +86,6 @@ public class PlantaoController {
 
             return "cadastroplantao";
         }
-
         return "redirect:/dashboard";
     }
 
@@ -104,15 +99,9 @@ public class PlantaoController {
             return "redirect:/login";
         }
 
-        model.addAttribute(
-                "plantoes",
-                service.listarDisponiveis()
-        );
+        model.addAttribute("plantoes",service.listarDisponiveis());
 
-        model.addAttribute(
-                "usuario",
-                usuario
-        );
+        model.addAttribute("usuario",usuario);
 
         return "plantoes";
     }
@@ -140,10 +129,7 @@ public String meusPlantoes(
         return "redirect:/dashboard";
     }
 
-    model.addAttribute(
-            "plantoes",
-            service.listarPorHospital(hospital)
-    );
+    model.addAttribute("plantoes",service.listarPorHospital(hospital));
 
     model.addAttribute("usuario", usuario);
 

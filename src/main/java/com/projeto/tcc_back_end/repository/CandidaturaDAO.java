@@ -11,10 +11,6 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-/**
- *
- * @author Aluno
- */
 @Repository
 public interface CandidaturaDAO
         extends JpaRepository<CandidaturaBean, Integer> {
@@ -24,7 +20,11 @@ public interface CandidaturaDAO
             MedicoBean medico
     );
 
-    List<CandidaturaBean> findByMedico(MedicoBean medico);
+    List<CandidaturaBean> findByMedico(
+            MedicoBean medico
+    );
 
-    List<CandidaturaBean> findByPlantao(PlantaoBean plantao);
+    List<CandidaturaBean> findByPlantao(
+            PlantaoBean plantao
+    );
 }

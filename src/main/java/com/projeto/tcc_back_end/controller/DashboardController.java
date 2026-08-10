@@ -25,8 +25,7 @@ public class DashboardController {
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model){
 
-        UsuarioBean usuario =
-                (UsuarioBean) session.getAttribute("usuarioLogado");
+        UsuarioBean usuario =(UsuarioBean) session.getAttribute("usuarioLogado");
 
         if(usuario == null){
             return "redirect:/login";
@@ -34,11 +33,8 @@ public class DashboardController {
 
         model.addAttribute("usuario", usuario);
 
-        model.addAttribute("plantoes",
-                plantaoService.listarDisponiveis());
+        model.addAttribute("plantoes", plantaoService.listarDisponiveis());
 
         return "dashboard";
-
     }
-
 }

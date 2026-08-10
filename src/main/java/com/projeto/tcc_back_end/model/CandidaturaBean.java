@@ -29,7 +29,6 @@ public class CandidaturaBean {
     @ManyToOne
     @JoinColumn(name = "medico_id", nullable = false)
     private MedicoBean medico;
-
     private String status;
 
     public CandidaturaBean() {
