@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>MedMatch - Dashboard Hospital</title>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1">
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+</head>
+
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-primary">
+
+    <div class="container">
+
+        <a
+            class="navbar-brand"
+            th:href="@{/dashboard}">
+
+            MedMatch
+
+        </a>
+
+        <a
+            th:href="@{/logout}"
+            class="btn btn-danger">
+
+            Sair
+
+        </a>
+
+    </div>
+
+</nav>
+
+<div class="container mt-5">
+
+    <div class="text-center mb-4">
+
+        <h2>
+
+            Bem-vindo,
+            <span th:text="${usuario.nome}">
+                Usuário
+            </span>
+
+        </h2>
+
+        <p class="text-muted">
+
+            Painel de gerenciamento do hospital
+
+        </p>
+
+    </div>
+
+    <hr>
+
+    <div class="row">
+
+        <div class="col-md-6 mb-4">
+
+            <div class="card shadow h-100">
+
+                <div class="card-header bg-primary text-white">
+
+                    <h4>
+
+                        Plantões
+
+                    </h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    <p>
+
+                        Gerencie os plantões disponíveis
+                        para os profissionais da saúde.
+
+                    </p>
+
+                    <div class="d-grid gap-3">
+
+                        <a
+                            th:href="@{/cadastroplantao}"
+                            class="btn btn-primary">
+
+                            Cadastrar Plantão
+
+                        </a>
+
+                        <a
+                            th:href="@{/meusplantoes}"
+                            class="btn btn-outline-primary">
+
+                            Meus Plantões
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-6 mb-4">
+
+            <div class="card shadow h-100">
+
+                <div class="card-header bg-success text-white">
+
+                    <h4>
+
+                        Plantonistas
+
+                    </h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    <p>
+
+                        Consulte e gerencie os profissionais
+                        interessados nos seus plantões.
+
+                    </p>
+
+                    <div class="d-grid gap-3">
+
+                        <a
+                            th:href="@{/solicitacoes}"
+                            class="btn btn-success">
+
+                            Solicitações de Plantonistas
+
+                        </a>
+
+                        <a
+                            th:href="@{/plantonistas}"
+                            class="btn btn-outline-success">
+
+                            Ver Plantonistas
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-6 mb-4">
+
+            <div class="card shadow h-100">
+
+                <div class="card-header bg-secondary text-white">
+
+                    <h4>
+
+                        Meu Cadastro
+
+                    </h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    <p>
+
+                        Consulte ou altere os dados
+                        cadastrados do hospital.
+
+                    </p>
+
+                    <div class="d-grid">
+
+                        <a
+                            th:href="@{/meucadastro}"
+                            class="btn btn-secondary">
+
+                            Meu Cadastro
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-6 mb-4">
+
+            <div class="card shadow h-100">
+
+                <div class="card-header bg-dark text-white">
+
+                    <h4>
+
+                        Resumo
+
+                    </h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    <p class="text-muted">
+
+                        Utilize o menu para cadastrar plantões
+                        e acompanhar os profissionais interessados.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <hr>
+
+    <div class="card shadow mb-5">
+
+        <div class="card-header bg-dark text-white">
+
+            <h4>
+
+                Plantões Disponíveis
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div
+                th:if="${#lists.isEmpty(plantoes)}"
+                class="alert alert-info">
+
+                Não existem plantões disponíveis no momento.
+
+            </div>
+
+            <div
+                th:unless="${#lists.isEmpty(plantoes)}"
+                class="table-responsive">
+
+                <table class="table table-hover">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Título</th>
+
+                        <th>Especialidade</th>
+
+                        <th>Data</th>
+
+                        <th>Horário</th>
+
+                        <th>Valor</th>
+
+                        <th>Status</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr
+                        th:each="plantao : ${plantoes}">
+
+                        <td
+                            th:text="${plantao.titulo}">
+
+                            Plantão
+
+                        </td>
+
+                        <td
+                            th:text="${plantao.especialidade}">
+
+                            Especialidade
+
+                        </td>
+
+                        <td
+                            th:text="${#temporals.format(plantao.data, 'dd/MM/yyyy')}">
+
+                            00/00/0000
+
+                        </td>
+
+                        <td
+                            th:text="${#temporals.format(plantao.horario, 'HH:mm')}">
+
+                            00:00
+
+                        </td>
+
+                        <td>
+
+                            R$
+
+                            <span
+                                th:text="${#numbers.formatDecimal(plantao.valor, 1, 2)}">
+
+                                0,00
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <span
+                                th:if="${plantao.status == 'ABERTO'}"
+                                class="badge bg-success">
+
+                                Aberto
+
+                            </span>
+
+                            <span
+                                th:if="${plantao.status != 'ABERTO'}"
+                                class="badge bg-secondary"
+                                th:text="${plantao.status}">
+
+                                Status
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+</body>
+
+</html>

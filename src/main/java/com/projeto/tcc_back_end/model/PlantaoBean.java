@@ -11,11 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.sql.Date;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import org.hibernate.annotations.ManyToAny;
 
 /**
  *
@@ -24,25 +21,35 @@ import org.hibernate.annotations.ManyToAny;
 @Entity
 @Table(name = "plantao")
 public class PlantaoBean {
+
     @Id
-    @GeneratedValue (strategy = GenerationType.AUTO)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
     @ManyToOne
     @JoinColumn(name = "hospital_id", referencedColumnName = "id", nullable = false)
     private HospitalBean hospital_id;
+
     private String titulo;
+
     private String especialidade;
+
     private LocalDate data;
+
     private LocalTime horario;
+
     private Double valor;
+
     private String status;
 
+    public PlantaoBean() {
+    }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -54,7 +61,6 @@ public class PlantaoBean {
         this.hospital_id = hospital_id;
     }
 
-    
     public String getTitulo() {
         return titulo;
     }
@@ -102,7 +108,4 @@ public class PlantaoBean {
     public void setStatus(String status) {
         this.status = status;
     }
-    
-    
-
 }

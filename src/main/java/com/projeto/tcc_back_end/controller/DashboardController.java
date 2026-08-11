@@ -23,11 +23,11 @@ public class DashboardController {
     private PlantaoService plantaoService;
 
     @GetMapping("/dashboard")
-    public String dashboard(HttpSession session, Model model){
+    public String dashboard(HttpSession session, Model model) {
 
-        UsuarioBean usuario =(UsuarioBean) session.getAttribute("usuarioLogado");
+        UsuarioBean usuario = (UsuarioBean) session.getAttribute("usuarioLogado");
 
-        if(usuario == null){
+        if (usuario == null) {
             return "redirect:/login";
         }
 
@@ -35,6 +35,14 @@ public class DashboardController {
 
         model.addAttribute("plantoes", plantaoService.listarDisponiveis());
 
-        return "dashboard";
+        if ("MEDICO".equals(usuario.getTipo())) {
+            return "dashboard";
+        }
+
+        if ("HOSPITAL".equals(usuario.getTipo())) {
+            return "dashboard-hospital";
+        }
+
+        return "redirect:/";
     }
 }

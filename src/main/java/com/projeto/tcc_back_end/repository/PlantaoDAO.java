@@ -18,8 +18,7 @@ public interface PlantaoDAO extends JpaRepository<PlantaoBean, Integer> {
     List<PlantaoBean> findByStatus(String status);
 
     @Query("SELECT p FROM PlantaoBean p WHERE p.hospital_id = :hospital")
-    List<PlantaoBean> buscarPorHospital(
-            @Param("hospital") HospitalBean hospital
+    List<PlantaoBean> buscarPorHospital(@Param("hospital") HospitalBean hospital
     );
 }
 

@@ -74,7 +74,7 @@ public class PlantaoService {
             throw new IllegalArgumentException("Status obrigatório.");
         }
 
-        if(plantao.getHospital_id() == null){
+        if(plantao.getHospital_id()== null){
             throw new IllegalArgumentException("Hospital obrigatório.");
         }
 
