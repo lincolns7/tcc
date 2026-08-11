@@ -18,6 +18,5 @@ public interface CandidaturaDAO extends JpaRepository<CandidaturaBean, Integer> 
 
     List<CandidaturaBean> findByMedico(MedicoBean medico);
 
-    List<CandidaturaBean> findBybuscarPorHospital(HospitalBean hospital);
-
+    List<CandidaturaBean> findByMedicoAndStatus(MedicoBean medico, String status);
 }

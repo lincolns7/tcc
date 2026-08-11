@@ -34,30 +34,26 @@ public class CandidaturaService {
 
     public void candidatar(Integer plantaoId, Integer medicoId) {
 
-        PlantaoBean plantao =
-                plantaoDAO.findById(plantaoId).orElse(null);
+        PlantaoBean plantao = plantaoDAO.findById(plantaoId).orElse(null);
 
         if (plantao == null) {
             throw new IllegalArgumentException("Plantão não encontrado.");
         }
 
         if (!"ABERTO".equals(plantao.getStatus())) {
-            throw new IllegalArgumentException(
-                    "Este plantão não está disponível."
-            );
+            throw new IllegalArgumentException("Este plantão não está disponível.");
         }
 
-        MedicoBean medico =
-                medicoDAO.findById(medicoId).orElse(null);
+        MedicoBean medico = medicoDAO.findById(medicoId).orElse(null);
 
         if (medico == null) {
-            throw new IllegalArgumentException(
-                    "Médico não encontrado."
-            );
+            throw new IllegalArgumentException("Médico não encontrado.");
+        }
+        if (!medico.getEspecialidade().equalsIgnoreCase(plantao.getEspecialidade())) {
+        throw new IllegalArgumentException("Sua especialidade não é compatível com este plantão.");
         }
 
-        List<CandidaturaBean> candidaturas =
-                repository.findByMedico(medico);
+        List<CandidaturaBean> candidaturas = repository.findByMedico(medico);
 
         for (CandidaturaBean candidatura : candidaturas) {
 
@@ -93,10 +89,23 @@ public class CandidaturaService {
         return repository.findByMedico(medico);
     }
 
-    public List<CandidaturaBean> listarSolicitacoes(
-            HospitalBean hospital) {
+    public List<CandidaturaBean> listarSolicitacoes(HospitalBean hospital) {
 
-        return repository.buscarPorHospital(hospital);
+    List<CandidaturaBean> todas = repository.findAll();
+
+    List<CandidaturaBean> solicitacoes = new java.util.ArrayList<>();
+
+    for (CandidaturaBean candidatura : todas) {
+
+        if (candidatura.getPlantao() != null &&
+            candidatura.getPlantao().getHospital_id() != null &&
+            candidatura.getPlantao().getHospital_id().getId().equals(hospital.getId())) {
+
+            solicitacoes.add(candidatura);
+        }
+    }
+
+    return solicitacoes;
     }
     
 
@@ -105,46 +114,43 @@ public class CandidaturaService {
         return repository.findById(id).orElse(null);
     }
 
-    public void aceitarCandidatura(
-            Integer candidaturaId,
-            HospitalBean hospital) {
+    public void aceitarCandidatura(Integer candidaturaId, HospitalBean hospital) {
 
-        CandidaturaBean candidatura =
-                repository.findById(candidaturaId).orElse(null);
+    CandidaturaBean candidatura = repository.findById(candidaturaId).orElse(null);
 
-        if (candidatura == null) {
-            throw new IllegalArgumentException(
-                    "Candidatura não encontrada."
-            );
-        }
-
-        if (candidatura.getPlantao() == null) {
-            throw new IllegalArgumentException(
-                    "Plantão da candidatura não encontrado."
-            );
-        }
-
-        HospitalBean hospitalDoPlantao =
-                candidatura.getPlantao().getHospital_id();
-
-        if (hospitalDoPlantao == null ||
-                !hospitalDoPlantao.getId().equals(hospital.getId())) {
-
-            throw new IllegalArgumentException(
-                    "Você não tem permissão para aceitar esta candidatura."
-            );
-        }
-
-        if (!"PENDENTE".equals(candidatura.getStatus())) {
-            throw new IllegalArgumentException(
-                    "Esta candidatura não está pendente."
-            );
-        }
-
-        candidatura.setStatus("ACEITA");
-
-        repository.save(candidatura);
+    if (candidatura == null) {
+        throw new IllegalArgumentException("Candidatura não encontrada.");
     }
+
+    if (candidatura.getPlantao() == null) {
+        throw new IllegalArgumentException("Plantão da candidatura não encontrado.");
+    }
+
+    HospitalBean hospitalDoPlantao = candidatura.getPlantao().getHospital_id();
+
+    if (hospitalDoPlantao == null || !hospitalDoPlantao.getId().equals(hospital.getId())) {
+        throw new IllegalArgumentException("Você não tem permissão para aceitar esta candidatura.");
+    }
+
+    if (!"PENDENTE".equals(candidatura.getStatus())) {
+        throw new IllegalArgumentException("Esta candidatura não está pendente.");
+    }
+
+    List<CandidaturaBean> candidaturasDoPlantao = repository.findAll();
+
+    for (CandidaturaBean outraCandidatura : candidaturasDoPlantao) {
+
+        if (outraCandidatura.getPlantao() != null && outraCandidatura.getPlantao().getId().equals(candidatura.getPlantao().getId()) &&
+                "ACEITA".equals(outraCandidatura.getStatus())) {
+
+            throw new IllegalArgumentException("Este plantão já possui um médico contratado.");
+        }
+    }
+
+    candidatura.setStatus("ACEITA");
+
+    repository.save(candidatura);
+}
 
     public void recusarCandidatura(
             Integer candidaturaId,
@@ -216,4 +222,10 @@ public class CandidaturaService {
 
         repository.delete(candidatura);
     }
+    
+    public List<CandidaturaBean> listarPlantaoAceitos(MedicoBean medico) {
+
+    return repository.findByMedicoAndStatus(medico, "ACEITA");
+
+}
 }

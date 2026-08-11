@@ -50,8 +50,12 @@ public class PlantaoService {
             throw new IllegalArgumentException("Especialidade obrigatória.");
         }
 
-        if(plantao.getData() == null){
-            throw new IllegalArgumentException("Data obrigatória.");
+        if (plantao.getData() == null) {
+        throw new IllegalArgumentException("A data do plantão é obrigatória.");
+        }
+
+        if (plantao.getData().isBefore(LocalDate.now())) {
+        throw new IllegalArgumentException("A data do plantão não pode ser anterior à data atual.");
         }
 
         if(plantao.getData().isBefore(LocalDate.now())){
@@ -62,9 +66,9 @@ public class PlantaoService {
             throw new IllegalArgumentException("Horário obrigatório.");
         }
 
-        if(plantao.getValor() == null){
-            throw new IllegalArgumentException("Valor obrigatório.");
-        }
+        if (plantao.getValor() == null || plantao.getValor() <= 0) {
+    throw new IllegalArgumentException("O valor do plantão deve ser maior que zero.");
+}
 
         if (plantao.getValor() <= 0) {
         throw new IllegalArgumentException("Valor deve ser maior que zero.");

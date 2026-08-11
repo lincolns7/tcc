@@ -210,4 +210,113 @@ public class CandidaturaController {
 
         return "solicitacoes";
     }
+    
+    @PostMapping("/aceitarcandidatura/{id}")
+    public String aceitarCandidatura(
+        @PathVariable Integer id,
+        HttpSession session,
+        RedirectAttributes redirectAttributes) {
+
+    UsuarioBean usuario = (UsuarioBean) session.getAttribute("usuarioLogado");
+
+    if (usuario == null) {
+        return "redirect:/login";
+    }
+
+    if (!"HOSPITAL".equals(usuario.getTipo())) {
+        return "redirect:/dashboard";
+    }
+
+    HospitalBean hospital = hospitalService.buscarPorUsuario(usuario);
+
+    if (hospital == null) {
+        return "redirect:/dashboard";
+    }
+
+    try {
+
+        candidaturaService.aceitarCandidatura(id, hospital);
+
+        redirectAttributes.addFlashAttribute("sucesso","Candidatura aceita com sucesso."
+        );
+
+    } catch (IllegalArgumentException e) {
+
+        redirectAttributes.addFlashAttribute("erro",e.getMessage()
+        );
+    }
+
+    return "redirect:/solicitacoes";
+}
+
+        @PostMapping("/recusarcandidatura/{id}")
+        public String recusarCandidatura(
+        @PathVariable Integer id,
+        HttpSession session,
+        RedirectAttributes redirectAttributes) {
+
+    UsuarioBean usuario = (UsuarioBean) session.getAttribute("usuarioLogado");
+
+    if (usuario == null) {
+        return "redirect:/login";
+    }
+
+    if (!"HOSPITAL".equals(usuario.getTipo())) {
+        return "redirect:/dashboard";
+    }
+
+    HospitalBean hospital = hospitalService.buscarPorUsuario(usuario);
+
+    if (hospital == null) {
+        return "redirect:/dashboard";
+    }
+
+    try {
+
+        candidaturaService.recusarCandidatura(id, hospital);
+
+        redirectAttributes.addFlashAttribute(
+                "sucesso",
+                "Candidatura recusada com sucesso."
+        );
+
+    } catch (IllegalArgumentException e) {
+
+        redirectAttributes.addFlashAttribute(
+                "erro",
+                e.getMessage()
+        );
+    }
+
+    return "redirect:/solicitacoes";
+}
+        @GetMapping("/meusplantoesmedico")
+    public String meusPlantoesMedico(
+        HttpSession session,
+        Model model) {
+
+    UsuarioBean usuario = (UsuarioBean) session.getAttribute("usuarioLogado");
+
+    if (usuario == null) {
+        return "redirect:/login";
+    }
+
+    if (!"MEDICO".equals(usuario.getTipo())) {
+        return "redirect:/dashboard";
+    }
+
+    MedicoBean medico = medicoService.buscarPorUsuario(usuario);
+
+    if (medico == null) {
+        return "redirect:/dashboard";
+    }
+
+    List<CandidaturaBean> candidaturas =
+            candidaturaService.listarPlantaoAceitos(medico);
+
+    model.addAttribute("usuario", usuario);
+    model.addAttribute("candidaturas", candidaturas);
+
+    return "meusplantoesmedico";
+}
 }
