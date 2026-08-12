@@ -24,11 +24,13 @@ public class UsuarioService {
         if (usuario.getEmail() == null || usuario.getEmail().trim().isEmpty()) {
             throw new IllegalArgumentException("E-mail obrigatório.");
         }
+
         if (usuario.getSenha() == null || usuario.getSenha().trim().isEmpty()) {
             throw new IllegalArgumentException("Senha obrigatória.");
         }
 
         UsuarioBean usuarioBanco = repository.findByEmail(usuario.getEmail());
+
         if (usuarioBanco == null) {
             throw new IllegalArgumentException("Usuário não encontrado.");
         }
@@ -36,6 +38,7 @@ public class UsuarioService {
         if (!usuarioBanco.getSenha().equals(usuario.getSenha())) {
             throw new IllegalArgumentException("Senha incorreta.");
         }
+
         return usuarioBanco;
     }
 
@@ -47,6 +50,10 @@ public class UsuarioService {
 
         if (usuario.getEmail() == null || usuario.getEmail().trim().isEmpty()) {
             throw new IllegalArgumentException("E-mail obrigatório.");
+        }
+
+        if (!usuario.getEmail().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+            throw new IllegalArgumentException("Informe um e-mail válido.");
         }
 
         if (usuario.getSenha() == null || usuario.getSenha().trim().isEmpty()) {
@@ -61,9 +68,14 @@ public class UsuarioService {
             throw new IllegalArgumentException("Tipo de usuário obrigatório.");
         }
 
+        if (!"MEDICO".equals(usuario.getTipo()) && !"HOSPITAL".equals(usuario.getTipo())) {
+            throw new IllegalArgumentException("Tipo de usuário inválido.");
+        }
+
         if (repository.findByEmail(usuario.getEmail()) != null) {
             throw new IllegalArgumentException("Já existe um usuário cadastrado com esse e-mail.");
         }
+
         repository.save(usuario);
     }
 
@@ -86,6 +98,7 @@ public class UsuarioService {
         if (repository.findById(id).isEmpty()) {
             throw new IllegalArgumentException("Usuário não encontrado.");
         }
+
         repository.deleteById(id);
-}
+    }
 }

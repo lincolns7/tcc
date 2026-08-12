@@ -8,7 +8,6 @@ import com.projeto.tcc_back_end.model.MedicoBean;
 import com.projeto.tcc_back_end.model.UsuarioBean;
 import com.projeto.tcc_back_end.repository.MedicoDAO;
 import com.projeto.tcc_back_end.repository.UsuarioDAO;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,20 +24,25 @@ public class MedicoService {
     @Autowired
     private UsuarioDAO usuarioDAO;
 
-    public void cadastrarMedico(String nome,String email,String senha,String telefone,String crm,String especialidade){
+    public void cadastrarMedico(String nome, String email, String senha, String telefone, String crm, String especialidade) {
 
-    
         if(nome == null || nome.trim().isEmpty()){
             throw new IllegalArgumentException("Nome obrigatório.");
         }
 
         if(email == null || email.trim().isEmpty()){
-            throw new IllegalArgumentException("E-mail obrigatório.");
-        }
+    throw new IllegalArgumentException("E-mail obrigatório.");
+}
 
-        if(usuarioDAO.findByEmail(email) != null){
-            throw new IllegalArgumentException("E-mail já cadastrado.");
-        }
+email = email.trim();
+
+if(!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")){
+    throw new IllegalArgumentException("Informe um e-mail válido.");
+}
+
+if(usuarioDAO.findByEmail(email) != null){
+    throw new IllegalArgumentException("E-mail já cadastrado.");
+}
 
         if(senha == null || senha.trim().isEmpty()){
             throw new IllegalArgumentException("Senha obrigatória.");
@@ -50,6 +54,16 @@ public class MedicoService {
 
         if(crm == null || crm.trim().isEmpty()){
             throw new IllegalArgumentException("CRM obrigatório.");
+        }
+
+        crm = crm.trim();
+
+        if(!crm.matches("\\d+")){
+            throw new IllegalArgumentException("O CRM deve conter apenas números.");
+        }
+
+        if(crm.length() < 4 || crm.length() > 10){
+            throw new IllegalArgumentException("Informe um CRM válido.");
         }
 
         if(repository.findByCrm(crm) != null){
@@ -64,6 +78,12 @@ public class MedicoService {
             throw new IllegalArgumentException("Telefone obrigatório.");
         }
 
+        String telefoneNumeros = telefone.replaceAll("\\D", "");
+
+        if(telefoneNumeros.length() != 10 && telefoneNumeros.length() != 11){
+            throw new IllegalArgumentException("Informe um telefone válido.");
+        }
+
         UsuarioBean usuario = new UsuarioBean();
 
         usuario.setNome(nome);
@@ -73,7 +93,6 @@ public class MedicoService {
 
         usuarioDAO.save(usuario);
 
-
         MedicoBean medico = new MedicoBean();
 
         medico.setUsuario(usuario);
@@ -82,28 +101,45 @@ public class MedicoService {
         medico.setEspecialidade(especialidade);
 
         repository.save(medico);
-
     }
 
     public MedicoBean buscarPorId(Integer id){
 
         return repository.findById(id).orElse(null);
-
     }
 
     public void atualizarMedico(MedicoBean medico){
 
-        if(medico.getId() == null){
-            throw new IllegalArgumentException("Médico inválido.");
-        }
-
-        if(medico.getTelefone() == null || medico.getTelefone().trim().isEmpty()){
-            throw new IllegalArgumentException("Telefone obrigatório.");
-        }
-
-        repository.save(medico);
-
+    if(medico.getId() == null){
+        throw new IllegalArgumentException("Médico inválido.");
     }
+
+    if(medico.getTelefone() == null || medico.getTelefone().trim().isEmpty()){
+        throw new IllegalArgumentException("Telefone obrigatório.");
+    }
+
+    String telefoneNumeros = medico.getTelefone().replaceAll("\\D", "");
+
+    if(telefoneNumeros.length() != 10 && telefoneNumeros.length() != 11){
+        throw new IllegalArgumentException("Informe um telefone válido.");
+    }
+
+    if(medico.getCrm() == null || medico.getCrm().trim().isEmpty()){
+        throw new IllegalArgumentException("CRM obrigatório.");
+    }
+
+    String crmNumeros = medico.getCrm().replaceAll("\\D", "");
+
+    if(crmNumeros.length() != 6){
+        throw new IllegalArgumentException("Informe um CRM válido.");
+    }
+
+    if(medico.getEspecialidade() == null || medico.getEspecialidade().trim().isEmpty()){
+        throw new IllegalArgumentException("Especialidade obrigatória.");
+    }
+
+    repository.save(medico);
+}
 
     public void excluirMedico(Integer id){
 
@@ -112,16 +148,14 @@ public class MedicoService {
         }
 
         repository.deleteById(id);
-
     }
-    
+
     public MedicoBean buscarPorUsuario(UsuarioBean usuario) {
 
-    if (usuario == null) {
-        return null;
-    }
+        if (usuario == null) {
+            return null;
+        }
 
-    return repository.findByUsuario(usuario);
+        return repository.findByUsuario(usuario);
     }
-
 }
