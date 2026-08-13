@@ -2,14 +2,14 @@
 <!--
 Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
 Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
+--><!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
 
     <meta charset="UTF-8">
 
-    <title>MedMatch - Minhas Candidaturas</title>
+    <title>MedMatch - Meus Plantões</title>
 
     <meta
         name="viewport"
@@ -47,33 +47,30 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
 </nav>
 
-
 <div class="container mt-5">
 
     <div class="text-center mb-4">
 
-        <h2>Minhas Candidaturas</h2>
+        <h2>Meus Plantões</h2>
 
         <p class="text-muted">
 
-            Consulte os plantões aos quais você se candidatou.
+            Plantões cadastrados pelo seu hospital
 
         </p>
 
     </div>
 
-
     <div
-        th:if="${#lists.isEmpty(candidaturas)}"
-        class="alert alert-info text-center">
+        th:if="${#lists.isEmpty(plantoes)}"
+        class="alert alert-info">
 
-        Você ainda não possui candidaturas.
+        Você ainda não possui plantões cadastrados.
 
     </div>
 
-
     <div
-        th:unless="${#lists.isEmpty(candidaturas)}"
+        th:unless="${#lists.isEmpty(plantoes)}"
         class="table-responsive">
 
         <table class="table table-hover table-bordered bg-white shadow">
@@ -82,9 +79,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
                 <tr>
 
-                    <th>Plantão</th>
-
-                    <th>Hospital</th>
+                    <th>Título</th>
 
                     <th>Especialidade</th>
 
@@ -100,58 +95,45 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
             </thead>
 
-
             <tbody>
 
                 <tr
-                    th:each="candidatura : ${candidaturas}">
+                    th:each="plantao : ${plantoes}">
 
                     <td
-                        th:text="${candidatura.plantao.titulo}">
+                        th:text="${plantao.titulo}">
 
                         Plantão
 
                     </td>
 
-
                     <td
-                        th:text="${candidatura.plantao.hospital_id.nomeHospital}">
-
-                        Hospital
-
-                    </td>
-
-
-                    <td
-                        th:text="${candidatura.plantao.especialidade}">
+                        th:text="${plantao.especialidade}">
 
                         Especialidade
 
                     </td>
 
-
                     <td
-                        th:text="${#temporals.format(candidatura.plantao.data, 'dd/MM/yyyy')}">
+                        th:text="${#temporals.format(plantao.data, 'dd/MM/yyyy')}">
 
                         00/00/0000
 
                     </td>
 
-
                     <td
-                        th:text="${#temporals.format(candidatura.plantao.horario, 'HH:mm')}">
+                        th:text="${#temporals.format(plantao.horario, 'HH:mm')}">
 
                         00:00
 
                     </td>
-
 
                     <td>
 
                         R$
 
                         <span
-                            th:text="${#numbers.formatDecimal(candidatura.plantao.valor, 1, 2)}">
+                            th:text="${#numbers.formatDecimal(plantao.valor, 1, 2)}">
 
                             0,00
 
@@ -159,34 +141,37 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 
                     </td>
 
-
                     <td>
 
                         <span
-                            th:if="${candidatura.status == 'PENDENTE'}"
-                            class="badge bg-warning text-dark">
-
-                            Pendente
-
-                        </span>
-
-
-                        <span
-                            th:if="${candidatura.status == 'ACEITA'}"
+                            th:if="${plantao.status == 'ABERTO'}"
                             class="badge bg-success">
 
-                            Aceita
+                            Aberto
 
                         </span>
-
 
                         <span
-                            th:if="${candidatura.status == 'RECUSADA'}"
-                            class="badge bg-danger">
+                            th:if="${plantao.status == 'FECHADO'}"
+                            class="badge bg-secondary">
 
-                            Recusada
+                            Fechado
 
                         </span>
+
+                        <span
+                            th:if="${plantao.status != 'ABERTO' and plantao.status != 'FECHADO'}"
+                            class="badge bg-secondary"
+                            th:text="${plantao.status}">
+
+                            Status
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
 
                     </td>
 
@@ -199,7 +184,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     </div>
 
 </div>
-
 
 <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">

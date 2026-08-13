@@ -4,7 +4,6 @@
  */
 package com.projeto.tcc_back_end.controller;
 
-import com.projeto.tcc_back_end.model.CandidaturaBean;
 import com.projeto.tcc_back_end.model.HospitalBean;
 import com.projeto.tcc_back_end.model.PlantaoBean;
 import com.projeto.tcc_back_end.model.UsuarioBean;
@@ -75,6 +74,7 @@ public class PlantaoController {
                 hospitalService.buscarPorUsuario(usuario);
 
         if (hospital == null) {
+
             model.addAttribute(
                     "erro",
                     "Hospital não encontrado."
@@ -115,6 +115,10 @@ public class PlantaoController {
             return "redirect:/login";
         }
 
+        if (!"MEDICO".equals(usuario.getTipo())) {
+            return "redirect:/dashboard";
+        }
+
         model.addAttribute(
                 "plantoes",
                 service.listarDisponiveis()
@@ -151,9 +155,12 @@ public class PlantaoController {
             return "redirect:/dashboard";
         }
 
+        List<PlantaoBean> plantoes =
+                service.listarPorHospital(hospital);
+
         model.addAttribute(
                 "plantoes",
-                service.listarPorHospital(hospital)
+                plantoes
         );
 
         model.addAttribute(
@@ -195,25 +202,17 @@ public class PlantaoController {
             return "redirect:/meusplantoes";
         }
 
-        if (plantao.getHospital_id()== null ||
+        if (plantao.getHospital_id() == null ||
                 !plantao.getHospital_id().getId()
                         .equals(hospital.getId())) {
 
             return "redirect:/meusplantoes";
         }
 
-        //List<CandidaturaBean> candidaturas =
-        //        candidaturaService.listarPorPlantao(plantao);
-
         model.addAttribute(
                 "plantao",
                 plantao
         );
-
-//        model.addAttribute(
-//                "candidaturas",
-//                candidaturas
-//        );
 
         model.addAttribute(
                 "usuario",
