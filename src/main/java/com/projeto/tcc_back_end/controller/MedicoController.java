@@ -32,9 +32,7 @@ public class MedicoController {
 
     @GetMapping("/cadastromedico")
     public String cadastroMedico() {
-
         return "cadastromedico";
-
     }
 
     @PostMapping("/cadastromedico")
@@ -44,15 +42,26 @@ public class MedicoController {
             @RequestParam String telefone,
             @RequestParam String senha,
             @RequestParam String crm,
-            @RequestParam String especialidade) {
+            @RequestParam String especialidade,
+            Model model) {
 
-        service.cadastrarMedico(
-                nome,
-                email,
-                senha,
-                telefone,
-                crm,
-                especialidade);
+        try {
+
+            service.cadastrarMedico(
+                    nome,
+                    email,
+                    senha,
+                    telefone,
+                    crm,
+                    especialidade
+            );
+
+        } catch (IllegalArgumentException e) {
+
+            model.addAttribute("erro", e.getMessage());
+
+            return "cadastromedico";
+        }
 
         return "redirect:/login";
     }
@@ -70,14 +79,14 @@ public class MedicoController {
         }
 
         if (!"MEDICO".equals(usuario.getTipo())) {
-            return "redirect:/";
+            return "redirect:/dashboard";
         }
 
         MedicoBean medico =
                 service.buscarPorUsuario(usuario);
 
         if (medico == null) {
-            return "redirect:/";
+            return "redirect:/dashboard";
         }
 
         model.addAttribute("medico", medico);
@@ -87,42 +96,55 @@ public class MedicoController {
     }
 
     @PostMapping("/editarmedico")
-    public String salvarEdicao(
-            @ModelAttribute MedicoBean medico,
-            @RequestParam String nome,
-            @RequestParam String email,
-            HttpSession session) {
+public String salvarEdicao(
+        @ModelAttribute MedicoBean medico,
+        HttpSession session,
+        Model model) {
 
-        UsuarioBean usuario =
-                (UsuarioBean) session.getAttribute("usuarioLogado");
+    UsuarioBean usuario =
+            (UsuarioBean) session.getAttribute("usuarioLogado");
 
-        if (usuario == null) {
-            return "redirect:/login";
-        }
+    if (usuario == null) {
+        return "redirect:/login";
+    }
 
-        if (!"MEDICO".equals(usuario.getTipo())) {
-            return "redirect:/";
-        }
+    if (!"MEDICO".equals(usuario.getTipo())) {
+        return "redirect:/dashboard";
+    }
 
-        MedicoBean medicoBanco =
-                service.buscarPorId(medico.getId());
+    MedicoBean medicoBanco =
+            service.buscarPorId(medico.getId());
 
-        if (medicoBanco == null) {
-            return "redirect:/";
-        }
+    if (medicoBanco == null) {
+        return "redirect:/dashboard";
+    }
+
+    try {
 
         medicoBanco.setTelefone(medico.getTelefone());
         medicoBanco.setEspecialidade(medico.getEspecialidade());
 
         service.atualizarMedico(medicoBanco);
 
-        usuario.setNome(nome);
-        usuario.setEmail(email);
+        if (medico.getUsuario() != null) {
 
-        usuarioService.atualizarUsuario(usuario);
+            usuario.setNome(medico.getUsuario().getNome());
+            usuario.setEmail(medico.getUsuario().getEmail());
 
-        session.setAttribute("usuarioLogado", usuario);
+            usuarioService.atualizarUsuario(usuario);
 
-        return "redirect:/iniciomedicos";
+            session.setAttribute("usuarioLogado", usuario);
+        }
+
+    } catch (IllegalArgumentException e) {
+
+        model.addAttribute("erro", e.getMessage());
+        model.addAttribute("medico", medicoBanco);
+        model.addAttribute("usuario", usuario);
+
+        return "editarmedico";
     }
+
+    return "redirect:/dashboard";
+}
 }
